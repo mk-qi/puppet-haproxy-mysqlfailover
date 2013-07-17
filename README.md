@@ -1,2 +1,2 @@
-puppet-haproxy-mysqlfailover-
-=============================
+puppet-haproxy-mysqlfailover
+=====
