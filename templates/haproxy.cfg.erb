@@ -1,0 +1,137 @@
+# HAProxy configuration v0.1
+# mk2011
+# 
+# Global config
+#
+global
+        log /dev/log local4 info
+        stats socket /tmp/haproxy.stats level admin
+        maxconn 20000
+        uid 600
+        gid 600
+        daemon
+        quiet
+defaults
+        log     global
+        mode    tcp
+        option  tcplog
+        option  log-health-checks
+        option  dontlognull
+        option  redispatch
+        retries 3
+        maxconn 6000
+        contimeout      5000
+        clitimeout      50000
+        srvtimeout      50000
+#
+# Status page
+#
+# without Authentication
+      
+listen stats  192.168.2.42:4748
+	mode    http
+        stats enable
+        stats hide-version
+        stats uri /
+        stats realm Haproxy\ Statistics
+
+#
+# Frontend for DB writes and reads
+#
+# phpdb_write -> phpdb_cluster_db_write
+# phpdb_read --> phpdb_cluster_db_read
+# cangdb_write -> cangdb_cluster_db_write
+# cangdb_read --> cangdb_cluster_db_read
+# sechdb_write -> sechdb_cluster_db_write
+# sechdb_read --> sechdb_cluster_db_read
+# psptdb_write -> psptdb_cluster_db_write
+# psptdb_read --> psptdb_cluster_db_read
+#
+frontend phpdb_write
+	    mode    tcp
+	    bind 192.168.2.210:3306
+	    default_backend phpdb_cluster_db_write
+
+frontend phpdbdb_read
+	     mode    tcp
+	    bind 192.168.2.211:3306
+	    default_backend phpdb_cluster_db_read
+#
+frontend cangdb_write
+	    bind 192.168.2.212:3306
+	    default_backend cangdb_cluster_db_write
+
+frontend cangdb_read
+	    bind 192.168.2.213:3306
+	    default_backend cangdb_cluster_db_read
+#
+frontend sechdb_write
+	    bind 192.168.2.214:3306
+	    default_backend sechdb_cluster_db_write
+
+frontend sechdb_read
+	    bind 192.168.2.215:3306
+	    default_backend sechdb_cluster_db_read
+#
+frontend psptdb_write
+	    bind 192.168.2.216:3306
+	    default_backend psptdb_cluster_db_write
+
+frontend psptdb_read
+	    bind 192.168.2.217:3306
+	    default_backend psptdb_cluster_db_read
+      
+#
+# Backend mysql_cluster status
+#
+backend phpdb_cluster_db_write
+        mode    tcp
+        option  tcpka
+        option  httpchk GET /dbs
+        server db01 192.168.10.20:3306 check port 9200 inter 1s rise 2 fall 2
+        server db02 192.168.10.21:3306 check port 9200 inter 1s rise 2 fall 2 backup
+    
+#
+backend phpdb_cluster_db_read
+        mode    tcp
+        option  tcpka
+        server db01 192.168.10.21:3306 check port 9200 inter 1s rise 2 fall 2
+        server db02 192.168.10.20:3306 check port 9200 inter 1s rise 2 fall 2 backup
+#
+backend cangdb_cluster_db_write
+        mode    tcp
+        option  tcpka
+        server db01 192.168.10.61:3306 check port 9200 inter 1s rise 2 fall 2
+        server db02 192.168.10.62:3306 check port 9200 inter 1s rise 2 fall 2 backup
+#
+backend cangdb_cluster_db_read
+        mode    tcp
+        option  tcpka
+        server db01 192.168.10.62:3306 check port 9200 inter 1s rise 2 fall 2
+        server db02 192.168.10.61:3306 check port 9200 inter 1s rise 2 fall 2 backup
+#
+#
+backend sechdb_cluster_db_write
+        mode    tcp
+        option  tcpka
+        server db01 192.168.10.91:3306 check port 9200 inter 1s rise 2 fall 2
+        server db02 192.168.10.92:3306 check port 9200 inter 1s rise 2 fall 2 backup
+#
+backend sechdb_cluster_db_read
+        mode    tcp
+        option  tcpka
+        server db01 192.168.10.92:3306 check port 9200 inter 1s rise 2 fall 2
+        server db02 192.168.10.91:3306 check port 9200 inter 1s rise 2 fall 2 backup
+#
+backend psptdb_cluster_db_write
+        mode    tcp
+        option  tcpka
+        server db01 192.168.10.31:3306 check port 9200 inter 1s rise 2 fall 2
+        server db02 192.168.10.32:3306 check port 9200 inter 1s rise 2 fall 2 backup
+#
+#
+backend psptdb_cluster_db_read
+        mode    tcp
+        option  tcpka
+        server db01 192.168.10.32:3306 check port 9200 inter 1s rise 2 fall 2
+        server db02 192.168.10.31:3306 check port 9200 inter 1s rise 2 fall 2 backup

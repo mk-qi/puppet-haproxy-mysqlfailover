@@ -1,0 +1,17 @@
+#
+# /etc/xinetd.d/mysqlchk
+#
+service mysqlchk_write
+{
+        flags           = REUSE
+        log_type        = FILE /var/log/chkmysql.log
+        socket_type     = stream
+        port            = 9200
+        wait            = no
+        user            = nobody
+        server          = /opt/scripts/mysqlhealth/mysqlchk_status.sh
+        log_on_failure  += USERID
+        disable         = no
+        #only_from       = 192.168.2.0/24 # recommended to put the IPs that need
+                                    # to connect exclusively (security purposes)
+}

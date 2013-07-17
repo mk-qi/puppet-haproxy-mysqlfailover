@@ -1,0 +1,10 @@
+/var/log/chkmysql.log {
+       weekly
+       rotate 2
+       copytruncate
+       size 500M
+       delaycompress
+       compress
+       notifempty
+       missingok
+}
