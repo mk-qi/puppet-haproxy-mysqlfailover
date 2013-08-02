@@ -38,7 +38,7 @@ listen stats  192.168.2.42:4748
 #
 # Frontend for DB writes and reads
 #
-# phpdb_write -> phpdb_cluster_db_write
+# phpdb_write --> phpdb_cluster_db_write
 # phpdb_read --> phpdb_cluster_db_read
 # cangdb_write -> cangdb_cluster_db_write
 # cangdb_read --> cangdb_cluster_db_read
@@ -86,6 +86,7 @@ frontend psptdb_read
 #
 backend phpdb_cluster_db_write
         mode    tcp
+        option httpchk
         option  tcpka
         option  httpchk GET /dbs
         server db01 192.168.10.20:3306 check port 9200 inter 1s rise 2 fall 2
@@ -94,18 +95,21 @@ backend phpdb_cluster_db_write
 #
 backend phpdb_cluster_db_read
         mode    tcp
+        option httpchk
         option  tcpka
         server db01 192.168.10.21:3306 check port 9200 inter 1s rise 2 fall 2
         server db02 192.168.10.20:3306 check port 9200 inter 1s rise 2 fall 2 backup
 #
 backend cangdb_cluster_db_write
         mode    tcp
+        option httpchk
         option  tcpka
         server db01 192.168.10.61:3306 check port 9200 inter 1s rise 2 fall 2
         server db02 192.168.10.62:3306 check port 9200 inter 1s rise 2 fall 2 backup
 #
 backend cangdb_cluster_db_read
         mode    tcp
+        option httpchk
         option  tcpka
         server db01 192.168.10.62:3306 check port 9200 inter 1s rise 2 fall 2
         server db02 192.168.10.61:3306 check port 9200 inter 1s rise 2 fall 2 backup
@@ -113,18 +117,21 @@ backend cangdb_cluster_db_read
 #
 backend sechdb_cluster_db_write
         mode    tcp
+        option httpchk
         option  tcpka
         server db01 192.168.10.91:3306 check port 9200 inter 1s rise 2 fall 2
         server db02 192.168.10.92:3306 check port 9200 inter 1s rise 2 fall 2 backup
 #
 backend sechdb_cluster_db_read
         mode    tcp
+        option httpchk
         option  tcpka
         server db01 192.168.10.92:3306 check port 9200 inter 1s rise 2 fall 2
         server db02 192.168.10.91:3306 check port 9200 inter 1s rise 2 fall 2 backup
 #
 backend psptdb_cluster_db_write
         mode    tcp
+        option httpchk
         option  tcpka
         server db01 192.168.10.31:3306 check port 9200 inter 1s rise 2 fall 2
         server db02 192.168.10.32:3306 check port 9200 inter 1s rise 2 fall 2 backup
@@ -132,6 +139,7 @@ backend psptdb_cluster_db_write
 #
 backend psptdb_cluster_db_read
         mode    tcp
+        option httpchk
         option  tcpka
         server db01 192.168.10.32:3306 check port 9200 inter 1s rise 2 fall 2
         server db02 192.168.10.31:3306 check port 9200 inter 1s rise 2 fall 2 backup
