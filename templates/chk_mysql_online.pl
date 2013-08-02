@@ -6,9 +6,7 @@ use IO::Socket::INET;
 
 # GLOBLE CONFIG VARIABLES
 my %status = ( 'OK' => 0 );
-#my $host = get_local_ip_address();
-my $host = "192.168.10.101";
-
+my $host = get_local_ip_address();
 my $port = "3306";
 my $timeout = 2; #2s
 # the master and slave are the same
